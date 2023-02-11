@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from typing import Collection, Optional, Self
+from typing import Collection, Optional
 
 from sqlalchemy import and_, column, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -67,7 +67,7 @@ class EventQueryBuilder:
         self.query = query
         self.filters: list[BooleanClauseList] = []
 
-    def apply_filter(self, _filter: NostrFilter) -> Self:  # type: ignore
+    def apply_filter(self, _filter: NostrFilter):  # type: ignore
         filter_builder = (
             EventFiltersBuilder()  # type: ignore
             .filter_ids(_filter.ids)
@@ -102,24 +102,24 @@ class EventFiltersBuilder:
     def __init__(self) -> None:
         self.filters: list[BinaryExpression] = []
 
-    def filter_tags(self, tag_type: str, tags: list[str]) -> Self:  # type: ignore
+    def filter_tags(self, tag_type: str, tags: list[str]):  # type: ignore
         self.filters.append(NostrTag.type == tag_type)
         self.filters.append(NostrTag.key.in_(tags))  # type: ignore
         return self
 
-    def filter_since(self, since: Optional[int]) -> Self:  # type: ignore
+    def filter_since(self, since: Optional[int]):  # type: ignore
         if since:
             self.filters.append(NostrEvent.created_at >= since)
 
         return self
 
-    def filter_until(self, until: Optional[int]) -> Self:  # type: ignore
+    def filter_until(self, until: Optional[int]):  # type: ignore
         if until:
             self.filters.append(NostrEvent.created_at < until)
 
         return self
 
-    def filter_ids(self, ids: Optional[list[str]]) -> Self:  # type: ignore
+    def filter_ids(self, ids: Optional[list[str]]):  # type: ignore
         if ids:
             prefix = [
                 NostrEvent.id.ilike(f"{event_id}%") for event_id in ids  # type: ignore
@@ -128,7 +128,7 @@ class EventFiltersBuilder:
 
         return self
 
-    def filter_authors(self, authors: Optional[list[str]]) -> Self:  # type: ignore
+    def filter_authors(self, authors: Optional[list[str]]):  # type: ignore
         if authors:
             prefix = [
                 NostrEvent.pubkey.ilike(f"{author}%")  # type: ignore
@@ -138,7 +138,7 @@ class EventFiltersBuilder:
 
         return self
 
-    def filter_kinds(self, kinds: Optional[list[EventKind]]) -> Self:  # type: ignore
+    def filter_kinds(self, kinds: Optional[list[EventKind]]):  # type: ignore
         if kinds:
             prefix = [NostrEvent.kind == kind for kind in kinds]
             self.filters.append(or_(*prefix))

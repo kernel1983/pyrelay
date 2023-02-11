@@ -1,5 +1,5 @@
 import abc
-from typing import Optional, Self
+from typing import Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -16,7 +16,7 @@ class UnitOfWork:
     events: EventsRepository
     subscriptions: Subscriptions
 
-    async def __aenter__(self) -> Self:
+    async def __aenter__(self):
         return self
 
     async def __aexit__(self, exn_type, exn_value, traceback) -> None:

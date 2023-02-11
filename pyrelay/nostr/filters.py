@@ -1,4 +1,4 @@
-from typing import Optional, Self
+from typing import Optional
 
 import attr
 
@@ -49,7 +49,7 @@ class NostrFilter(NostrDataType):
         return cls()
 
     @classmethod
-    def deserialize(cls, kwargs) -> Self:
+    def deserialize(cls, kwargs):#
         if "kinds" in kwargs:
             kwargs["kinds"] = [EventKind(kind) for kind in kwargs["kinds"]]
 

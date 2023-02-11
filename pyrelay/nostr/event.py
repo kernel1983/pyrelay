@@ -1,7 +1,7 @@
 import enum
 import json
 from hashlib import sha256
-from typing import Any, Collection, Mapping, Self, TypeAlias
+from typing import Any, Collection, Mapping, TypeAlias
 
 import attr
 import secp256k1
@@ -67,7 +67,7 @@ class NostrDataType:
         """
 
     @classmethod
-    def deserialize(cls, **kwargs) -> Self:  # type: ignore
+    def deserialize(cls, **kwargs):  # type: ignore
         """
         Each datatype should be able to loaded data into the relevant object
         """
