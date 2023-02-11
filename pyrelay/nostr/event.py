@@ -5,6 +5,9 @@ from typing import Any, Collection, Mapping, TypeAlias
 
 import attr
 import secp256k1
+import eth_keys
+import web3
+# import eth_account.messages
 
 JSONValues: TypeAlias = (
     Mapping[str, "JSONValues"]
@@ -102,15 +105,32 @@ def calc_event_id(
     data = [0, public_key, created_at, kind_number, tags, content]
     data_str = json.dumps(data, separators=(",", ":"), ensure_ascii=False)
     return sha256(data_str.encode("UTF-8")).hexdigest()
+    # return eth_account.messages.encode_defunct(data_str.encode("UTF-8")).hexdigest()
 
 
 def verify(event_id: str, pubkey: str, sig: str) -> bool:
-    pub_key = secp256k1.PublicKey(
-        bytes.fromhex("02" + pubkey), True
-    )  # add 02 for schnorr (bip340)
-    return pub_key.schnorr_verify(
-        bytes.fromhex(event_id), bytes.fromhex(sig), None, raw=True
-    )
+    print('event_id', event_id)
+    print('pubkey', pubkey)
+    print('sig', sig)
+    sig_bytes = web3.Web3.toBytes(hexstr=sig.replace('0x', ''))
+    print('sig_bytes', sig_bytes)
+    signature = eth_keys.keys.Signature(signature_bytes=sig_bytes)
+    print('signature', signature)
+    event_id_bytes = web3.Web3.toBytes(hexstr=event_id)
+    print('event_id_bytes', event_id_bytes)
+    # pk_hex = signature.recover_public_key_from_msg_hash(event_id_bytes)
+    # print('pk_hex', pk_hex)
+    # pk_bytes = web3.Web3.toBytes(hexstr=pk_hex)
+    pk = eth_keys.keys.PublicKey.recover_from_msg_hash(event_id_bytes, signature)
+    print('address', pk.to_checksum_address())
+
+    # pub_key = secp256k1.PublicKey(
+    #     bytes.fromhex("02" + pubkey), True
+    # )  # add 02 for schnorr (bip340)
+    # return pub_key.schnorr_verify(
+    #     bytes.fromhex(event_id), bytes.fromhex(sig), None, raw=True
+    # )
+    return pk.to_checksum_address() == pubkey
 
 
 @attr.s(auto_attribs=True)

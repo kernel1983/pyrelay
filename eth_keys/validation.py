@@ -101,8 +101,8 @@ def validate_non_recoverable_signature_bytes(value: Any) -> None:
 
 def validate_signature_v(value: int) -> None:
     validate_integer(value)
-    validate_gte(value, minimum=0)
-    validate_lte(value, maximum=1)
+    validate_gte(value, minimum=27)
+    validate_lte(value, maximum=28)
 
 
 def validate_signature_r_or_s(value: int) -> None:

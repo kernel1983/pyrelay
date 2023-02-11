@@ -141,7 +141,7 @@ def ecdsa_raw_verify(msg_hash: bytes,
 def ecdsa_raw_recover(msg_hash: bytes,
                       vrs: Tuple[int, int, int]) -> bytes:
     v, r, s = vrs
-    v += 27
+    # v += 27
 
     if not (27 <= v <= 34):
         raise BadSignature("%d must in range 27-31" % v)
